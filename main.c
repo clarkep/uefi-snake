@@ -26,15 +26,14 @@ void snake_round(struct pdraw pd)
     uint16_t snake_buffer[max_snake_len][2];
     uint8_t world_buffer[pd.y_max][pd.x_max];
     memset(world_buffer, 0, pd.x_max*pd.y_max);
-    size_t snake_len = 10;
-    size_t sbuf_head_index = 9;
+    size_t sbuf_head_index = 3;
     size_t sbuf_tail_index = 0;
-    for (int i=0; i<10; ++i) 
+    for (int i=0; i<4; ++i) 
     {
-        world_buffer[20][11+i] = 1;
-        pixel_on(pd, 20, 11+i, snake_color);
+        world_buffer[20][17+i] = 1;
+        pixel_on(pd, 20, 17+i, snake_color);
         snake_buffer[i][0] = 20;
-        snake_buffer[i][1] = 11+i;
+        snake_buffer[i][1] = 17+i;
     }
     uint16_t head_y = 20, head_x = 20;
     int v_x = 1, v_y = 0;
