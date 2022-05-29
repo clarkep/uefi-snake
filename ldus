@@ -1,0 +1,2 @@
+#/bin/bash
+doas cp snake.efi mnt/EFI/BOOT/BOOTX64.EFI

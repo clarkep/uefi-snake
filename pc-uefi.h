@@ -77,7 +77,7 @@ struct pdraw setup_graphics(int pixel_size)
     return p;
 }
 
-void pixel_on(struct pdraw p,  int x, int y, uint32_t color)
+void pixel_on(struct pdraw p,  int y, int x, uint32_t color)
 {
     // if (x >= 0 && x < p.x_max && y >= 0 && y < p.y_max) {      
         int pix_per_scanl = p.gop->Mode->Information->PixelsPerScanLine;
@@ -90,7 +90,7 @@ void pixel_on(struct pdraw p,  int x, int y, uint32_t color)
     // }
 }
 
-void pixel_off(struct pdraw p, int x, int y)
+void pixel_off(struct pdraw p, int y, int x)
 {
-    pixel_on(p, x, y, 0x00000000);
+    pixel_on(p, y, x, 0x00000000);
 }
