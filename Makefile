@@ -1,4 +1,4 @@
-TARGET = fbuf.efi
+TARGET = snake.efi
 SRCS = main.c
 # CFLAGS = -g 
 ALSO = pc-uefi.h
