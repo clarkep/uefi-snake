@@ -8,10 +8,19 @@ void draw_measures(struct pdraw pd) {
     }
 }
 
+void place_new_apple(struct pdraw pd, int32_t apple_color, uint8_t **avoid_buffer, uint16_t *apple_y, uint16_t *apple_x)
+{
+    do {
+        *apple_y = rand() % pd.y_max;
+        *apple_x = rand() % pd.x_max;
+    } while (avoid_buffer[*apple_y][*apple_x]); 
+    pixel_on(pd, *apple_y, *apple_x, apple_color);
+}
+
 void snake_round(struct pdraw pd)
 {   
     // draw_measures(pd);
-    uint32_t pixel = 0x0000ff00;
+    uint32_t snake_color = 0x0000ff00;
     int game_over = 0;
     const size_t max_snake_len = pd.x_max * pd.y_max;
     uint16_t snake_buffer[max_snake_len][2];
@@ -23,12 +32,17 @@ void snake_round(struct pdraw pd)
     for (int i=0; i<10; ++i) 
     {
         world_buffer[20][11+i] = 1;
-        pixel_on(pd, 20, 11+i, pixel);
+        pixel_on(pd, 20, 11+i, snake_color);
         snake_buffer[i][0] = 20;
         snake_buffer[i][1] = 11+i;
     }
     uint16_t head_y = 20, head_x = 20;
     int v_x = 1, v_y = 0;
+
+    uint32_t apple_color = 0x00ff0022;
+    srand(123);
+    uint16_t apple_y, apple_x;
+    place_new_apple(pd, apple_color, world_buffer, &apple_y, &apple_x); 
     while (!game_over) { 
         int key;
         switch (key=getchar_ifany()) {
@@ -56,14 +70,18 @@ void snake_round(struct pdraw pd)
             game_over = 1;
         } else {
             world_buffer[head_y][head_x] = 1;
-            pixel_on(pd, head_y, head_x, pixel);
+            pixel_on(pd, head_y, head_x, snake_color);
             ++sbuf_head_index;
             snake_buffer[sbuf_head_index][0] = head_y;
             snake_buffer[sbuf_head_index][1] = head_x;
-            pixel_off(pd, snake_buffer[sbuf_tail_index][0], 
+            if (head_y == apple_y && head_x == apple_x) {
+                place_new_apple(pd, apple_color, world_buffer, &apple_y, &apple_x);
+            } else {
+                pixel_off(pd, snake_buffer[sbuf_tail_index][0], 
                           snake_buffer[sbuf_tail_index][1]);
-            world_buffer[snake_buffer[sbuf_tail_index][0]][snake_buffer[sbuf_tail_index][1]] = 0;
-            sbuf_tail_index++;
+                world_buffer[snake_buffer[sbuf_tail_index][0]][snake_buffer[sbuf_tail_index][1]] = 0;
+                sbuf_tail_index++;
+            }
         }
         usleep(50000);
     }
