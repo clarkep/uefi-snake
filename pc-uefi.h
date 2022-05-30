@@ -53,9 +53,9 @@ struct pdraw setup_graphics(int pixel_size)
         resolution: bottom margin will be visible\n");
     }
     p.gop = gop;
-    printf("%d %d %d\n", p.pixel_size, p.x_max, p.y_max);
-    printf("%x %d", p.gop->Mode->FrameBufferBase, p.gop->Mode->Information->PixelsPerScanLine);
-    // sleep(3);
+    // printf("pixel size: %d. x_max: %d. y_max %d\n", p.pixel_size, p.x_max, p.y_max);
+    // printf("%x %d", p.gop->Mode->FrameBufferBase, p.gop->Mode->Information->PixelsPerScanLine);
+    // sleep(10);
 
     // printf("Pixel format: %x\n", gop->Mode->Information->PixelFormat);
     // sleep(5);

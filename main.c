@@ -8,18 +8,26 @@ void draw_measures(struct pdraw pd) {
     }
 }
 
+void clear_screen(struct pdraw pd)
+{
+    for (int y=0; y<pd.y_max; ++y)
+        for (int x=0; x<pd.x_max; ++x)
+            pixel_off(pd, y, x);
+}
+
 void place_new_apple(struct pdraw pd, int32_t apple_color, uint8_t **avoid_buffer, uint16_t *apple_y, uint16_t *apple_x)
 {
     do {
         *apple_y = rand() % pd.y_max;
         *apple_x = rand() % pd.x_max;
-    } while (avoid_buffer[*apple_y][*apple_x]); 
+    } while (avoid_buffer[*apple_y][*apple_x]);
     pixel_on(pd, *apple_y, *apple_x, apple_color);
 }
 
 void snake_round(struct pdraw pd)
 {   
     // draw_measures(pd);
+    clear_screen(pd);
     uint32_t snake_color = 0x0000ff00;
     int game_over = 0;
     const size_t max_snake_len = pd.x_max * pd.y_max;
@@ -41,23 +49,27 @@ void snake_round(struct pdraw pd)
     uint32_t apple_color = 0x00ff0022;
     srand(123);
     uint16_t apple_y, apple_x;
-    place_new_apple(pd, apple_color, world_buffer, &apple_y, &apple_x); 
+    place_new_apple(pd, apple_color, (uint8_t **) world_buffer, &apple_y, &apple_x); 
     while (!game_over) { 
         int key;
         switch (key=getchar_ifany()) {
             case 105:
+                if (v_y > 0) break;
                 v_y = -1;
                 v_x = 0;
                 break;
             case 106:
+                if (v_x > 0) break;
                 v_y = 0;
                 v_x = -1;
                 break;
             case 107:
+                if (v_y < 0) break;
                 v_y = 1;
                 v_x = 0;
                 break;
             case 108:
+                if (v_x < 0) break;
                 v_y = 0;
                 v_x = 1;
                 break;
@@ -70,29 +82,38 @@ void snake_round(struct pdraw pd)
         } else {
             world_buffer[head_y][head_x] = 1;
             pixel_on(pd, head_y, head_x, snake_color);
-            ++sbuf_head_index;
+            sbuf_head_index = (sbuf_head_index + 1) % max_snake_len;
             snake_buffer[sbuf_head_index][0] = head_y;
             snake_buffer[sbuf_head_index][1] = head_x;
             if (head_y == apple_y && head_x == apple_x) {
-                place_new_apple(pd, apple_color, world_buffer, &apple_y, &apple_x);
+                pixel_on(pd, 0, 0, 0x00ffffff);
+                place_new_apple(pd, apple_color, (uint8_t **) world_buffer, &apple_y, &apple_x);
             } else {
                 pixel_off(pd, snake_buffer[sbuf_tail_index][0], 
                           snake_buffer[sbuf_tail_index][1]);
                 world_buffer[snake_buffer[sbuf_tail_index][0]][snake_buffer[sbuf_tail_index][1]] = 0;
-                sbuf_tail_index++;
+                sbuf_tail_index = (sbuf_tail_index + 1) % max_snake_len;
             }
         }
         usleep(50000);
     }
+    clear_screen(pd);
     pixel_on(pd, 0, 0, 0x00ffaa66);
+    sleep(1);
 }
 
 int main(int argc, char **argv)
 {
     printf("Starting graphics...\n");
-    //sleep(3);
-    struct pdraw pd = setup_graphics(15); 
-    snake_round(pd);
+    struct pdraw pd = setup_graphics(20);
+    while (1) {
+        snake_round(pd);
+        getchar_ifany(); // clear keypresses
+        char key = getchar();
+        if (key=='q') {
+            break;
+        }
+    }
     sleep(2);
     return 0;
 }
