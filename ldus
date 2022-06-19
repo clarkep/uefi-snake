@@ -1,4 +1,0 @@
-#/bin/bash
-doas mount --uuid F9E3-043F mnt
-doas cp snake.efi mnt/EFI/BOOT/BOOTX64.EFI
-doas umount mnt

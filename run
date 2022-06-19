@@ -1,3 +1,0 @@
-#!/bin/bash
-
-qemu-ovmf -s -drive file=fat:rw:img,media=disk,format=raw

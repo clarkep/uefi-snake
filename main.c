@@ -1,7 +1,8 @@
 #include <uefi.h>
 #include "pc-uefi.h"
 
-void draw_measures(struct pdraw pd) {
+void draw_measures(struct pdraw pd) 
+{
     uint32_t pixel = 0x0000ff00;
     for (int i=0; i<pd.y_max; i+=2) {
         pixel_on(pd, i, pd.x_max-1, (i%8==0) ? pixel+0x00ff00ff : pixel);

@@ -4,3 +4,6 @@ snake.efi
 uefi
 *.o
 *.swp
+t
+run
+ldus
